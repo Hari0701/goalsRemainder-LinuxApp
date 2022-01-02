@@ -1,10 +1,13 @@
 # Import the required library
+import sqlite3 as sql
+import time
+from datetime import datetime
 from tkinter import *
 from tkinter import ttk
 from tkcalendar import *
-from datetime import datetime
-import sqlite3 as sql
+
 import paths
+import speak
 
 # Create an instance of tkinter window
 root = Tk()
@@ -18,7 +21,6 @@ my_notebook = ttk.Notebook(root)
 my_notebook.pack()
 
 # sqlite3 Connection
-
 conn = sql.connect(paths.database, timeout=10)
 # create cursor
 c = conn.cursor()
@@ -108,23 +110,38 @@ submit_btn.grid(pady=(20, 80), row=4, column=1)
 try:
     c.execute("SELECT * FROM Goals")
     records = c.fetchall()
-    count = 0
-    for i in range(0, len(records)):
-        date = datetime(year=records[i][3], month=records[i][2], day=records[i][1],
-                        hour=records[i][4], minute=records[i][5])
-        countdown = date - datetime.now()
-        titles = Label(tab1, text=str(i + 1) + ". " + records[i][0] + ":",
-                       font=("Helvetica", 18, 'bold'), fg="#E2D3F4", bg="#013DC4")
-        counter = Label(tab1, text=str(countdown)[:-7] + " Minutes to go",
-                        font=("Helvetica", 17, 'bold'), fg="#E2D3F4", bg="#013DC4")
-        titles.grid(row=count, column=0, pady=20, ipadx=10, ipady=10)
-        counter.grid(row=count, column=1, pady=20, ipadx=10, ipady=10)
-        count += 1
-        if records[i][6] != '':
-            desc = Label(tab1, text=records[i][6],
-                         font=("Helvetica", 17, 'bold'), fg="#E2D3F4", bg="#013DC4")
-            desc.grid(row=count, column=1, pady=20, ipadx=10, ipady=10)
+
+    def tkinter_data():
+        count = 0
+        for i in range(0, len(records)):
+            date = datetime(year=records[i][3], month=records[i][2], day=records[i][1],
+                            hour=records[i][4], minute=records[i][5])
+            countdown = date - datetime.now()
+            titles = Label(tab1, text=str(i + 1) + ". " + records[i][0] + ":",
+                           font=("Helvetica", 18, 'bold'), fg="#E2D3F4", bg="#013DC4")
+            counter = Label(tab1, text=str(countdown)[:-7] + " Minutes to go",
+                            font=("Helvetica", 17, 'bold'), fg="#E2D3F4", bg="#013DC4")
+            titles.grid(row=count, column=0, pady=20, ipadx=10, ipady=10)
+            counter.grid(row=count, column=1, pady=20, ipadx=10, ipady=10)
             count += 1
+            if records[i][6] != '':
+                desc = Label(tab1, text=records[i][6],
+                             font=("Helvetica", 17, 'bold'), fg="#E2D3F4", bg="#013DC4")
+                desc.grid(row=count, column=1, pady=20, ipadx=10, ipady=10)
+                count += 1
+
+    def speak_data():
+        for i in range(0, len(records)):
+            date = datetime(year=records[i][3], month=records[i][2], day=records[i][1],
+                            hour=records[i][4], minute=records[i][5])
+            countdown = date - datetime.now()
+            speak.content("You have " + str(countdown)[:-7] + "Minutes to go" + " for " + records[i][0], tkinter_data())
+        speak.default()
+
+
+    if __name__ == "__main__":
+        tkinter_data()
+
 except:
     print("No Records Found")
 
