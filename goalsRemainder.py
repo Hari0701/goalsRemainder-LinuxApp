@@ -4,11 +4,12 @@ from tkinter import ttk
 from tkcalendar import *
 from datetime import datetime
 import sqlite3 as sql
+import paths
 
 # Create an instance of tkinter window
 root = Tk()
 root.title("Goals")
-icon = PhotoImage(file='/home/hari/PycharmProjects/goalsRemainder/clock.png')
+icon = PhotoImage(file=paths.icon)
 root.iconphoto(False, icon)
 # Define the geometry of the window
 root.geometry("1200x750")
@@ -17,7 +18,8 @@ my_notebook = ttk.Notebook(root)
 my_notebook.pack()
 
 # sqlite3 Connection
-conn = sql.connect("Goals.db")
+
+conn = sql.connect(paths.database, timeout=10)
 # create cursor
 c = conn.cursor()
 
@@ -111,7 +113,7 @@ try:
         date = datetime(year=records[i][3], month=records[i][2], day=records[i][1],
                         hour=records[i][4], minute=records[i][5])
         countdown = date - datetime.now()
-        titles = Label(tab1, text=str(i + 1)+ ". " + records[i][0] + ":",
+        titles = Label(tab1, text=str(i + 1) + ". " + records[i][0] + ":",
                        font=("Helvetica", 18, 'bold'), fg="#E2D3F4", bg="#013DC4")
         counter = Label(tab1, text=str(countdown)[:-7] + " Minutes to go",
                         font=("Helvetica", 17, 'bold'), fg="#E2D3F4", bg="#013DC4")
