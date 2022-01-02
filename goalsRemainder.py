@@ -111,7 +111,7 @@ try:
         date = datetime(year=records[i][3], month=records[i][2], day=records[i][1],
                         hour=records[i][4], minute=records[i][5])
         countdown = date - datetime.now()
-        titles = Label(tab1, text=records[i][0] + ":",
+        titles = Label(tab1, text=str(i + 1)+ ". " + records[i][0] + ":",
                        font=("Helvetica", 18, 'bold'), fg="#E2D3F4", bg="#013DC4")
         counter = Label(tab1, text=str(countdown)[:-7] + " Minutes to go",
                         font=("Helvetica", 17, 'bold'), fg="#E2D3F4", bg="#013DC4")
@@ -120,7 +120,7 @@ try:
         count += 1
         if records[i][6] != '':
             desc = Label(tab1, text=records[i][6],
-                         font=("Helvetica", 18, 'bold'), fg="#E2D3F4", bg="#013DC4")
+                         font=("Helvetica", 17, 'bold'), fg="#E2D3F4", bg="#013DC4")
             desc.grid(row=count, column=1, pady=20, ipadx=10, ipady=10)
             count += 1
 except:
